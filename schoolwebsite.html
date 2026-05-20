@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Student Management System</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+
+        .fade-in-up {
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased selection:bg-blue-500 selection:text-white">
+
+    <div id="setup-screen" class="hidden min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-4">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 fade-in-up">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-sm border border-blue-100">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Initial System Setup</h2>
+                <p class="text-sm text-slate-500 mt-1">Initialize your secure administrator credential passphrase before continuing.</p>
+            </div>
+            <form onsubmit="handleInitialSetup(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Create Admin Password</label>
+                    <input type="password" id="setup-password" required minlength="4" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition" placeholder="••••••••">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Confirm Password</label>
+                    <input type="password" id="setup-confirm" required minlength="4" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/10 active:scale-[0.98] transition duration-200">
+                    Save Credentials & Start
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="login-screen" class="hidden min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-4">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 fade-in-up">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-sm border border-emerald-100">
+                    <i class="fa-solid fa-lock text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Terminal Gate</h2>
+                <p class="text-sm text-slate-500 mt-1">Provide administrator passphrase to unlock data models.</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Manager Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="password" id="login-password" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition" placeholder="••••••••">
+                    </div>
+                </div>
+                <p id="login-error" class="text-red-500 text-xs hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Access Denied: Incorrect passphrase.</p>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl shadow-xl active:scale-[0.98] transition duration-200">
+                    Unlock Workspace
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-system" class="hidden min-h-screen flex flex-col md:flex-row">
+        
+        <aside class="w-full md:w-68 bg-slate-900 text-slate-200 flex flex-col border-r border-slate-800/60 shadow-xl">
+            <div class="p-5 border-b border-slate-800/60 flex items-center gap-3 bg-slate-950">
+                <div class="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-cubes text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm leading-tight text-white tracking-wide">SMS Node Terminal</h1>
+                    <span class="text-[11px] text-slate-400 font-mono">v3.0 Architecture</span>
+                </div>
+            </div>
+            <nav class="flex-1 p-4 space-y-1">
+                <button onclick="switchTab('list-tab')" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition duration-200 bg-slate-800 text-white" id="btn-list-tab">
+                    <i class="fa-solid fa-folder-tree w-5 opacity-80"></i> Student Directory
+                </button>
+                <button onclick="switchTab('add-tab')" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition duration-200 text-slate-400 hover:bg-slate-800/50 hover:text-white" id="btn-add-tab">
+                    <i class="fa-solid fa-user-plus w-5 opacity-80"></i> Add New Student
+                </button>
+                <button onclick="switchTab('rank-tab')" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition duration-200 text-slate-400 hover:bg-slate-800/50 hover:text-white" id="btn-rank-tab">
+                    <i class="fa-solid fa-chart-line w-5 opacity-80"></i> Metrics & Rankings
+                </button>
+                <button onclick="switchTab('settings-tab')" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition duration-200 text-slate-400 hover:bg-slate-800/50 hover:text-white" id="btn-settings-tab">
+                    <i class="fa-solid fa-shield-halved w-5 opacity-80"></i> Security Suite
+                </button>
+            </nav>
+            <div class="p-4 border-t border-slate-800/60 bg-slate-950">
+                <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-red-950/20 hover:text-red-400 transition duration-200">
+                    <i class="fa-solid fa-power-off text-xs"></i> Close Session
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col overflow-x-hidden">
+            <header class="bg-white border-b border-slate-200/80 h-16 flex items-center justify-between px-6 md:px-8 shadow-xs">
+                <div class="flex items-center gap-2">
+                    <div id="tab-indicator-dot" class="w-2 h-2 rounded-full bg-blue-600"></div>
+                    <h2 id="page-title" class="text-lg font-bold text-slate-900 tracking-tight">Student Directory</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-[11px] bg-slate-100 text-slate-700 font-mono px-3 py-1 rounded-lg border border-slate-200 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> LOCAL ENCRYPTED
+                    </span>
+                </div>
+            </header>
+
+            <div class="p-6 md:p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
+                
+                <div id="list-tab" class="tab-content space-y-6 fade-in-up">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-xs flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Total Cohort</span>
+                                <span id="metric-total" class="text-2xl font-black text-slate-900 mt-1 block">0</span>
+                            </div>
+                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-users text-sm"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-xs flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Average Grade Score</span>
+                                <span id="metric-avg" class="text-2xl font-black text-slate-900 mt-1 block">0%</span>
+                            </div>
+                            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-graduation-cap text-sm"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-xs flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Passing Threshold Rate</span>
+                                <span id="metric-pass" class="text-2xl font-black text-slate-900 mt-1 block">0%</span>
+                            </div>
+                            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-chart-pie text-sm"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200/60 shadow-xs">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <label class="text-[11px] font-bold uppercase text-slate-400 tracking-wider whitespace-nowrap"><i class="fa-solid fa-arrow-down-short-wide mr-1"></i> Strategy:</label>
+                            <select id="sort-engine" onchange="renderStudentList()" class="w-full sm:w-44 bg-slate-50 border border-slate-200 rounded-xl text-xs px-3 py-2 text-slate-700 font-medium focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                                <option value="name">Name (Alphabetical)</option>
+                                <option value="id">Student ID</option>
+                                <option value="gradeYear">Grade/Cohort Year</option>
+                            </select>
+                        </div>
+                        <div class="relative w-full sm:w-72">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="search-box" oninput="renderStudentList()" placeholder="Filter records by name or ID..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200/60 shadow-xs overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200/60 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                        <th class="py-4 px-6">Identity Profiles</th>
+                                        <th class="py-4 px-6">System ID / Cohort</th>
+                                        <th class="py-4 px-6">Contact Vector</th>
+                                        <th class="py-4 px-6">Subject Array Scores (0-100)</th>
+                                        <th class="py-4 px-6 text-right">Operation</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-table-body" class="divide-y divide-slate-100 text-xs text-slate-700">
+                                    </tbody>
+                            </table>
+                        </div>
+                        <div id="empty-state" class="hidden text-center py-16 px-4">
+                            <i class="fa-solid fa-box-open text-slate-200 text-4xl mb-3 block"></i>
+                            <h3 class="text-slate-400 font-medium text-xs">No local data structures found matching the query.</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="add-tab" class="tab-content hidden max-w-2xl bg-white rounded-2xl border border-slate-200/60 p-6 md:p-8 shadow-xs fade-in-up">
+                    <form id="student-form" onsubmit="handleCreateStudent(event)" class="space-y-6">
+                        <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <i class="fa-solid fa-address-card text-blue-500 text-sm"></i>
+                            <h3 class="text-base font-bold text-slate-900 tracking-tight">Struct Allocation Matrix</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Full Legal Name</label>
+                                <input type="text" id="stud-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Unique Student ID (Integer)</label>
+                                <input type="number" id="stud-id" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Grade/Study Year</label>
+                                <input type="number" id="stud-grade" placeholder="e.g., 1, 2, 3" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Date of Birth</label>
+                                <input type="date" id="stud-dob" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 border-b border-slate-100 pt-4 pb-3">
+                            <i class="fa-solid fa-map-pin text-indigo-500 text-sm"></i>
+                            <h3 class="text-base font-bold text-slate-900 tracking-tight">Location Data Interfacing</h3>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Phone Interconnect Number</label>
+                                <input type="tel" id="stud-phone" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">City Node Area</label>
+                                <input type="text" id="stud-loc" placeholder="e.g., Cairo, Giza" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Home Physical Address</label>
+                                <input type="text" id="stud-addr" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex justify-end">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/10 transition">
+                                Push Struct to Stack
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="rank-tab" class="tab-content hidden space-y-6 fade-in-up">
+                    <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 p-6 rounded-2xl text-white shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-base font-bold tracking-tight">Academic Sort Algorithms</h3>
+                            <p class="text-xs text-slate-400 mt-1">Dynamically reorganize the vector nodes based on active index criteria arrays.</p>
+                        </div>
+                        <div>
+                            <select id="rank-subject-selector" onchange="renderRankings()" class="bg-slate-800 text-xs border border-slate-700 px-3 py-2 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="0">Sort Engine: English Matrix</option>
+                                <option value="1">Sort Engine: Arabic Matrix</option>
+                                <option value="2">Sort Engine: Mathematics Matrix</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200/60 shadow-xs overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200/60 text-xs font-bold uppercase text-slate-400">
+                                    <th class="py-4 px-6 w-24">Stack Rank</th>
+                                    <th class="py-4 px-6">Identity</th>
+                                    <th class="py-4 px-6">Cohort Group</th>
+                                    <th class="py-4 px-6 text-right">Target Index Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rank-table-body" class="divide-y divide-slate-100 text-xs text-slate-700">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="settings-tab" class="tab-content hidden max-w-md bg-white rounded-2xl border border-slate-200/60 p-6 md:p-8 shadow-xs fade-in-up">
+                    <form onsubmit="handlePasswordChange(event)" class="space-y-4">
+                        <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <i class="fa-solid fa-user-lock text-blue-500 text-sm"></i>
+                            <h3 class="text-base font-bold text-slate-900 tracking-tight">Mutate System Passphrase</h3>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Verify Current Password</label>
+                            <input type="password" id="pass-curr" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">New Cryptic Password</label>
+                            <input type="password" id="pass-new" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Confirm Mutation Structure</label>
+                            <input type="password" id="pass-conf" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                        </div>
+                        <div class="pt-2">
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl text-xs tracking-wide transition">
+                                Rewrite Internal Memory Block
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        
+        let students = JSON.parse(localStorage.getItem('web_students')) || [
+            { id: 101, name: "Ahmed Ali", dob: "2002-05-12", address: "12 Tahrir St", location: "Cairo", phone: "010234567", gradeYear: 3, subjects: [92, 85, 78] },
+            { id: 102, name: "Sarah Mansour", dob: "2003-11-22", address: "44 El Geish Rd", location: "Giza", phone: "011987654", gradeYear: 2, subjects: [95, 90, 88] }
+        ];
+
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const isConfigured = localStorage.getItem('sys_pass');
+            if (!isConfigured) {
+                document.getElementById('setup-screen').classList.remove('hidden');
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden');
+            }
+        });
+
+      
+        function handleInitialSetup(e) {
+            e.preventDefault();
+            const pass = document.getElementById('setup-password').value;
+            const confirmPass = document.getElementById('setup-confirm').value;
+
+            if (pass !== confirmPass) {
+                return alert("❌ Mismatch Error: Passwords do not align.");
+            }
+
+            localStorage.setItem('sys_pass', pass);
+            alert("✓ Success: Passphrase saved. System unlocked.");
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('dashboard-system').classList.remove('hidden');
+            calculateMetrics();
+            renderStudentList();
+        }
+
+        
+        function handleLogin(e) {
+            e.preventDefault();
+            const entered = document.getElementById('login-password').value;
+            const saved = localStorage.getItem('sys_pass');
+
+            if(entered === saved) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard-system').classList.remove('hidden');
+                calculateMetrics();
+                renderStudentList();
+            } else {
+                const err = document.getElementById('login-error');
+                err.classList.remove('hidden');
+                setTimeout(() => err.classList.add('hidden'), 3500);
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById('login-password').value = '';
+            document.getElementById('dashboard-system').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function handlePasswordChange(e) {
+            e.preventDefault();
+            const curr = document.getElementById('pass-curr').value;
+            const newP = document.getElementById('pass-new').value;
+            const conf = document.getElementById('pass-conf').value;
+            const saved = localStorage.getItem('sys_pass');
+
+            if(curr !== saved) return alert("❌ Fault Exception: Verification of current password failed.");
+            if(newP !== conf) return alert("❌ Logic Error: Confirmation structure does not match.");
+
+            localStorage.setItem('sys_pass', newP);
+            alert("✓ Memory Mutation Successful: New admin passphrase active.");
+            e.target.reset();
+        }
+
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-slate-800', 'text-white');
+                el.classList.add('text-slate-400');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('bg-slate-800', 'text-white');
+
+            const titles = { 'list-tab': 'Student Directory', 'add-tab': 'Add New Student', 'rank-tab': 'Metrics & Rankings', 'settings-tab': 'Security Suite' };
+            document.getElementById('page-title').innerText = titles[tabId];
+
+          
+            const colors = { 'list-tab': 'bg-blue-600', 'add-tab': 'bg-indigo-600', 'rank-tab': 'bg-amber-500', 'settings-tab': 'bg-rose-500' };
+            const indicator = document.getElementById('tab-indicator-dot');
+            indicator.className = `w-2 h-2 rounded-full ${colors[tabId]}`;
+
+            if(tabId === 'list-tab') { calculateMetrics(); renderStudentList(); }
+            if(tabId === 'rank-tab') renderRankings();
+        }
+
+               function calculateMetrics() {
+            const total = students.length;
+            document.getElementById('metric-total').innerText = total;
+            
+            if(total === 0) {
+                document.getElementById('metric-avg').innerText = '0%';
+                document.getElementById('metric-pass').innerText = '0%';
+                return;
+            }
+
+            let sum = 0;
+            let passingStudents = 0;
+            
+            students.forEach(s => {
+                const studentAvg = (s.subjects[0] + s.subjects[1] + s.subjects[2]) / 3;
+                sum += studentAvg;
+                if(s.subjects[0] >= 50 && s.subjects[1] >= 50 && s.subjects[2] >= 50) {
+                    passingStudents++;
+                }
+            });
+
+            document.getElementById('metric-avg').innerText = Math.round(sum / total) + '%';
+            document.getElementById('metric-pass').innerText = Math.round((passingStudents / total) * 100) + '%';
+        }
+
+       
+        function handleCreateStudent(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('stud-id').value);
+            
+            if(students.some(s => s.id === id)) {
+                return alert("❌ Structural Key Collision: A student record with this ID already exists.");
+            }
+
+            const newStudent = {
+                id: id,
+                name: document.getElementById('stud-name').value,
+                dob: document.getElementById('stud-dob').value,
+                phone: document.getElementById('stud-phone').value,
+                location: document.getElementById('stud-loc').value,
+                address: document.getElementById('stud-addr').value,
+                gradeYear: parseInt(document.getElementById('stud-grade').value),
+                subjects: [0, 0, 0] 
+            };
+
+            students.push(newStudent);
+            saveData();
+            alert("✓ Allocation Complete: Appended student successfully.");
+            e.target.reset();
+            switchTab('list-tab');
+        }
+
+        function deleteStudent(id) {
+            if(confirm("Confirm dropping this data profile from runtime memory? Action is irreversible.")) {
+                students = students.filter(s => s.id !== id);
+                saveData();
+                calculateMetrics();
+                renderStudentList();
+            }
+        }
+
+        function updateScore(id, index, element) {
+            const val = parseInt(element.value) || 0;
+            const target = students.find(s => s.id === id);
+            if(target) {
+                target.subjects[index] = Math.min(100, Math.max(0, val));
+                saveData();
+                calculateMetrics(); 
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('web_students', JSON.stringify(students));
+        }
+
+
+        function renderStudentList() {
+            const tbody = document.getElementById('student-table-body');
+            const searchVal = document.getElementById('search-box').value.toLowerCase();
+            const sortBy = document.getElementById('sort-engine').value;
+
+            let displayList = [...students];
+            displayList = displayList.filter(s => s.name.toLowerCase().includes(searchVal) || s.id.toString().includes(searchVal));
+
+            displayList.sort((a, b) => {
+                if (sortBy === 'name') return a.name.localeCompare(b.name);
+                if (sortBy === 'id') return a.id - b.id;
+                if (sortBy === 'gradeYear') return a.gradeYear - b.gradeYear;
+            });
+
+            tbody.innerHTML = '';
+            if(displayList.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('empty-state').classList.add('hidden');
+
+            displayList.forEach(s => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/80 transition duration-150 group">
+                        <td class="py-4 px-6">
+                            <div class="font-bold text-slate-900 group-hover:text-blue-600 transition">${s.name}</div>
+                            <div class="text-[11px] text-slate-400 font-mono mt-0.5"><i class="fa-solid fa-cake-candles mr-1 text-[10px]"></i>${s.dob}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="font-mono font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md text-[10px]">ID: ${s.id}</span>
+                            <div class="text-[11px] text-slate-500 mt-1">Cohort Group: <span class="font-semibold text-slate-700">${s.gradeYear}</span></div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="text-[11px] text-slate-600"><i class="fa-solid fa-phone text-slate-400 mr-1.5"></i>${s.phone}</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5 truncate max-w-[160px]" title="${s.address}, ${s.location}">
+                                <i class="fa-solid fa-location-dot text-slate-400 mr-1.5"></i>${s.location}
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-slate-50 border border-slate-200 p-1.5 rounded-xl text-center">
+                                    <span class="text-[9px] uppercase font-black text-slate-400 block mb-0.5">ENG</span>
+                                    <input type="number" value="${s.subjects[0]}" onchange="updateScore(${s.id}, 0, this)" class="w-10 bg-white border border-slate-200 rounded-md text-center py-0.5 font-mono text-[11px] font-bold text-slate-700 focus:ring-1 focus:ring-blue-500 outline-none">
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 p-1.5 rounded-xl text-center">
+                                    <span class="text-[9px] uppercase font-black text-slate-400 block mb-0.5">ARA</span>
+                                    <input type="number" value="${s.subjects[1]}" onchange="updateScore(${s.id}, 1, this)" class="w-10 bg-white border border-slate-200 rounded-md text-center py-0.5 font-mono text-[11px] font-bold text-slate-700 focus:ring-1 focus:ring-blue-500 outline-none">
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 p-1.5 rounded-xl text-center">
+                                    <span class="text-[9px] uppercase font-black text-slate-400 block mb-0.5">MTH</span>
+                                    <input type="number" value="${s.subjects[2]}" onchange="updateScore(${s.id}, 2, this)" class="w-10 bg-white border border-slate-200 rounded-md text-center py-0.5 font-mono text-[11px] font-bold text-slate-700 focus:ring-1 focus:ring-blue-500 outline-none">
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="deleteStudent(${s.id})" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-2 rounded-xl transition" title="Purge Record">
+                                <i class="fa-solid fa-trash-can text-sm"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+                function renderRankings() {
+            const tbody = document.getElementById('rank-table-body');
+            const targetSubjectIndex = parseInt(document.getElementById('rank-subject-selector').value) || 0;
+
+            let sorted = [...students].sort((a, b) => b.subjects[targetSubjectIndex] - a.subjects[targetSubjectIndex]);
+
+            tbody.innerHTML = '';
+            sorted.forEach((s, idx) => {
+                let badge = `<span class="font-mono text-slate-400 font-bold">#${idx+1}</span>`;
+                if(idx === 0) badge = `<span class="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-extrabold px-2 py-0.5 rounded-md flex items-center gap-1 w-max"><i class="fa-solid fa-crown text-[9px]"></i>1st</span>`;
+                if(idx === 1) badge = `<span class="bg-slate-50 text-slate-700 border border-slate-200 text-[10px] font-extrabold px-2 py-0.5 rounded-md w-max block">2nd</span>`;
+                if(idx === 2) badge = `<span class="bg-amber-700/5 text-amber-800 border border-amber-700/10 text-[10px] font-extrabold px-2 py-0.5 rounded-md w-max block">3rd</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-4 px-6">${badge}</td>
+                        <td class="py-4 px-6 font-bold text-slate-900">${s.name}</td>
+                        <td class="py-4 px-6 text-slate-500 font-medium">Cohort Group ${s.gradeYear}</td>
+                        <td class="py-4 px-6 text-right font-mono font-black text-blue-600 text-sm">${s.subjects[targetSubjectIndex]} <span class="text-[10px] font-normal text-slate-400">/ 100</span></td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
